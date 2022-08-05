@@ -1,9 +1,8 @@
-const launches = require("../../models/launches.model");
+const express = require("express");
 
-function getAllLaunches(req, res) {
-  res.status(200).json(Array.from(launches.values()));
-}
+const { getAllLaunches } = require("./launches.controllers");
 
-module.exports = {
-  getAllLaunches,
-};
+const launchesRouter = express.Router();
+launchesRouter.get("/", getAllLaunches);
+
+module.exports = launchesRouter;
