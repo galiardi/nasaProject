@@ -22,8 +22,6 @@ function getAllLaunches() {
 function addNewLaunche(clientLauncheData) {
   flightNumber++;
 
-  clientLauncheData.launchDate = new Date(clientLauncheData.launchDate);
-
   const newLaunche = Object.assign({}, clientLauncheData, {
     flightNumber,
     customers: ["NASA"],
