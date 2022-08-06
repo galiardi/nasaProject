@@ -8,8 +8,9 @@ function httpGetAllLaunches(req, res) {
 }
 
 function httpAddNewLaunche(req, res) {
-  const newLaunche = req.body;
-  return res.status(201).json(addNewLaunche(newLaunche));
+  const clientLauncheData = req.body;
+  const newLaunche = addNewLaunche(clientLauncheData);
+  return res.status(201).json(newLaunche);
 }
 
 module.exports = {
