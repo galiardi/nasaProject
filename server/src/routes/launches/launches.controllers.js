@@ -25,7 +25,7 @@ function httpAddNewLaunche(req, res) {
   clientLauncheData.launchDate = new Date(clientLauncheData.launchDate);
   if (clientLauncheData.launchDate.toString() === "Invalid Date") {
     return res.status(400).json({
-      error: "Invalid Date",
+      error: "Invalid date",
     });
   }
 
