@@ -22,12 +22,7 @@ mongoose.connection.on("error", (err) => {
 
 async function startServer() {
   await loadPlanetsData();
-  await mongoose.connect(MONGO_URL, {
-    useNewUrlParser: true,
-    // useFindAndModify: false,
-    // useCreateIndex: true,
-    useUnifiedTopology: true,
-  });
+  await mongoose.connect(MONGO_URL);
 
   server.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}...`);
