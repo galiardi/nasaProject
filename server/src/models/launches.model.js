@@ -1,41 +1,69 @@
-const launches = new Map();
+const launchesDatabase = require("./launches.mongo");
+const planetsDatabase = require("./planets.mongo");
 
-let flightNumber = 100;
+const DEFAULT_FLIGTH_NUMBER = 100;
 
 const launch = {
   flightNumber: 100,
-  mission: "mission 1",
+  mission: "Pablito",
   rocket: "rocket 1",
-  target: "planet 1",
+  target: "Kepler-442 b",
   customers: ["customer 1"],
   launchDate: new Date("December 21, 2023"),
   upcoming: true,
   success: true,
 };
 
-launches.set(launch.flightNumber, launch);
+saveLaunch(launch);
 
-function getAllLaunches() {
-  return Array.from(launches.values());
+async function getLatestFligthNumber() {
+  const latestLaunch = await launchesDatabase.findOne().sort("-flightNumber");
+
+  if (!latestLaunch) {
+    return DEFAULT_FLIGTH_NUMBER;
+  }
+
+  return latestLaunch.flightNumber;
 }
 
-function addNewLaunche(clientLauncheData) {
-  flightNumber++;
-
-  const newLaunche = Object.assign({}, clientLauncheData, {
-    flightNumber,
-    customers: ["NASA"],
-    upcoming: true,
-    success: true,
+async function saveLaunch(launch) {
+  const planet = await planetsDatabase.findOne({
+    keplerName: launch.target,
   });
+  if (!planet) {
+    throw new Error("No matching planet found");
+  }
 
-  launches.set(flightNumber, newLaunche);
-
-  return newLaunche;
+  return await launchesDatabase.updateOne(
+    {
+      flightNumber: launch.flightNumber,
+    },
+    launch,
+    { upsert: true }
+  );
 }
 
-function existsLaunchWithId(launchId) {
-  return launches.has(launchId);
+async function getAllLaunches() {
+  return await launchesDatabase.find(
+    {},
+    {
+      _id: 0,
+      __v: 0,
+    }
+  );
+}
+
+async function addNewLaunch(launch) {
+  const newflightNumber = (await getLatestFligthNumber()) + 1;
+  const newLaunch = Object.assign({}, launch, {
+    flightNumber: newflightNumber,
+    success: true,
+    upcoming: true,
+    customers: ["NASA"],
+  });
+  const databaseResponse = await saveLaunch(newLaunch);
+  console.log(databaseResponse);
+  return newLaunch;
 }
 
 function abortLaunchById(launchId) {
@@ -47,7 +75,6 @@ function abortLaunchById(launchId) {
 
 module.exports = {
   getAllLaunches,
-  addNewLaunche,
-  existsLaunchWithId,
+  addNewLaunch,
   abortLaunchById,
 };

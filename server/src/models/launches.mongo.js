@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const launcheSchema = new mongoose.Schema({
+const launchSchema = new mongoose.Schema({
   flightNumber: {
     type: Number,
     required: true,
@@ -10,6 +10,10 @@ const launcheSchema = new mongoose.Schema({
     required: true,
   },
   rocket: {
+    type: String,
+    required: true,
+  },
+  target: {
     type: String,
     required: true,
   },
@@ -32,4 +36,4 @@ const launcheSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("launche", launcheSchema);
+module.exports = mongoose.model("launch", launchSchema);
